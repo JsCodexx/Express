@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <button onclick="logout()">Logout</button>
+    <table>
+      <thead>
+        <tr>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Age</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </body>
+  <script>
+    const elem = document.getElementById("tbody");
+    fetch("/user", {
+      headers: {
+        authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        if (res?.status === 200) {
+          res?.data.map((item) => {
+            elem.innerHTML += `
+            <tr>
+                <td>${item?.fname}</td>    
+                <td>${item?.lname}</td>    
+                <td>${item?.age}</td>    
+            </tr>
+            `;
+          });
+        } else {
+          alert(res?.message);
+        }
+      })
+      .catch((res) => alert(res?.message));
+
+    const logout = () => {
+      localStorage.removeItem("token");
+    };
+  </script>
+</html>
